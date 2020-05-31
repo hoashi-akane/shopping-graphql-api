@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  # MySQL
+  db:
+    image: mysql:8.0.14
+    container_name: shopping-mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - ./mysql/data:/var/lib/mysql
+    - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    - ./mysql/sql:/docker-entrypoint-initdb.d
+    ports:
+    - 3306:3306
+  

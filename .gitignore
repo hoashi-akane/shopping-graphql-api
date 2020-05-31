@@ -9,6 +9,8 @@
 /codegen/gen
 /gen
 
+docker-compose/mysql/data
+docker-compose/mysql/sql
 server_setting.go
 go.sum
 .idea/
