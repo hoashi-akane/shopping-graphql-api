@@ -2,6 +2,12 @@
 
 package model
 
+type NewGoods struct {
+	GoodsName string `json:"goodsName"`
+	Price     int    `json:"price"`
+	Stock     int    `json:"stock"`
+}
+
 type NewTodo struct {
 	Text   string `json:"text"`
 	UserID string `json:"userId"`
