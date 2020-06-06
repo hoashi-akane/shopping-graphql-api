@@ -14,8 +14,22 @@ type User {
   name: String!
 }
 
+type Goods{
+    id: ID!
+    goodsName: String!
+    price: Int!
+    stock: Int!
+}
+
 type Query {
   todos: [Todo!]!
+  goodes: [Goods!]!
+}
+
+input NewGoods{
+    goodsName: String!
+    price: Int!
+    stock: Int!
 }
 
 input NewTodo {
@@ -25,4 +39,5 @@ input NewTodo {
 
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  createGoods(input: NewGoods!): Goods!
 }
