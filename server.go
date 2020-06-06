@@ -29,7 +29,7 @@ func main() {
 	}
 	defer db.Close()
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{DB: db}}))
 
 	// 確認用url
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
