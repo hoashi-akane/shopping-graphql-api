@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -32,6 +33,11 @@ func (r *mutationResolver) CreateGoods(ctx context.Context, input model.NewGoods
 		Price:     input.Price,
 		Stock:     input.Stock,
 	}
+	ins, err := r.DB.Prepare("INSERT INTO goods(goods_name, price, stock) VALUES(?,?,?);")
+	if err != nil {
+		log.Fatal(err)
+	}
+	ins.Exec(good.GoodsName, good.Price, good.Stock)
 	return good, nil
 }
 
