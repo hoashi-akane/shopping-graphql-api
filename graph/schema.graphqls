@@ -15,7 +15,7 @@ type User {
 }
 
 type Goods{
-    id: ID!
+    id: Int!
     goodsName: String!
     price: Int!
     stock: Int!
@@ -24,6 +24,7 @@ type Goods{
 type Query {
   todos: [Todo!]!
   goodes: [Goods!]!
+  findGood(id: Int!): Goods!
 }
 
 input NewGoods{

@@ -53,6 +53,7 @@ func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
 		// 参照渡しをすることでコピー処理を発生させない。
 		// 構造体の配列に入れるための一時領域のため書き換えても問題ない。
 		goods = &model.Goods{}
+
 		err := rows.Scan(&goods.Id, &goods.GoodsName, &goods.Price, &goods.Stock)
 		if err != nil {
 			panic(fmt.Errorf("DBエラー"))
@@ -60,6 +61,19 @@ func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
 		results = append(results, goods)
 	}
 	return results, nil
+}
+
+func (r *queryResolver) FindGood(ctx context.Context, id int) (*model.Goods, error) {
+	stmt, err := r.DB.Prepare("SELECT id, goods_name, price, stock FROM goods WHERE id = ?")
+	if err != nil {
+		return nil, err
+	}
+	goods := &model.Goods{}
+	err = stmt.QueryRow(id).Scan(&goods.Id, &goods.GoodsName, &goods.Price, &goods.Stock)
+	if err != nil {
+		panic(fmt.Errorf("DBエラー"))
+	}
+	return goods, nil
 }
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
