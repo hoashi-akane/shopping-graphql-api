@@ -19,18 +19,27 @@ type Goods{
     goodsName: String!
     price: Int!
     stock: Int!
+    brand: Brands
+}
+
+type Brands{
+    id: Int!
+    brandName: String!
 }
 
 type Query {
   todos: [Todo!]!
   goodes: [Goods!]!
   findGood(id: Int!): Goods!
+  findBrand(id: Int!): Brands!
+
 }
 
 input NewGoods{
     goodsName: String!
     price: Int!
     stock: Int!
+    brandId: Int!
 }
 
 input NewTodo {
