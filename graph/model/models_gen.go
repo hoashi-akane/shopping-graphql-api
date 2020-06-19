@@ -2,6 +2,19 @@
 
 package model
 
+type GoodsCategorys struct {
+	ID           int    `json:"id"`
+	CategoryName string `json:"categoryName"`
+}
+
+type NewBrand struct {
+	BrandName string `json:"brandName"`
+}
+
+type NewCategory struct {
+	CategoryName string `json:"categoryName"`
+}
+
 type NewTodo struct {
 	Text   string `json:"text"`
 	UserID string `json:"userId"`

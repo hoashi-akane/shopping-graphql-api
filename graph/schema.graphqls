@@ -20,11 +20,17 @@ type Goods{
     price: Int!
     stock: Int!
     brand: Brands
+    category: GoodsCategorys
 }
 
 type Brands{
     id: Int!
     brandName: String!
+}
+
+type GoodsCategorys{
+    id: Int!
+    categoryName: String!
 }
 
 type Query {
@@ -47,7 +53,17 @@ input NewTodo {
   userId: String!
 }
 
+input NewBrand{
+    brandName: String!
+}
+
+input NewCategory{
+    categoryName: String!
+}
+
 type Mutation {
   createTodo(input: NewTodo!): Todo!
   createGoods(input: NewGoods!): Goods!
+  createBrand(input: NewBrand!): Brands!
+  createCategory(input: NewCategory!): GoodsCategorys!
 }

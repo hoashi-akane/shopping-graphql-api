@@ -28,6 +28,20 @@ func (r *goodsResolver) Brand(ctx context.Context, obj *model.Goods) (*model.Bra
 	return brands, err
 }
 
+func (r *goodsResolver) Category(ctx context.Context, obj *model.Goods) (*model.GoodsCategorys, error) {
+	// オブジェクト内のBrandIdがセットされているか識別
+	if obj.GoodsCategoryId == nil {
+		return nil, nil
+	}
+	stmt, err := r.DB.Prepare("SELECT id, category_name FROM goods_category WHERE id = ?")
+	if err != nil {
+		return nil, err
+	}
+	category := &model.GoodsCategorys{}
+	err = stmt.QueryRow(obj.BrandId).Scan(&category.ID, &category.CategoryName)
+	return category, err
+}
+
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
 	todo := &model.Todo{
 		Text:   input.Text,
@@ -39,17 +53,42 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 
 func (r *mutationResolver) CreateGoods(ctx context.Context, input model.NewGoods) (*model.Goods, error) {
 	good := &model.Goods{
-		GoodsName: input.GoodsName,
-		Price:     input.Price,
-		Stock:     input.Stock,
-		BrandId:   input.BrandId,
+		GoodsName:       input.GoodsName,
+		Price:           input.Price,
+		Stock:           input.Stock,
+		BrandId:         input.BrandId,
+		GoodsCategoryId: input.GoodsCategoryId,
 	}
-	ins, err := r.DB.Prepare("INSERT INTO goods(goods_name, price, stock, brand_id) VALUES(?,?,?,?);")
+	ins, err := r.DB.Prepare("INSERT INTO goods(goods_name, price, stock, brand_id, category_id) VALUES(?,?,?,?,?);")
 	if err != nil {
 		log.Fatal(err)
 	}
-	ins.Exec(good.GoodsName, good.Price, good.Stock, good.BrandId)
+	ins.Exec(good.GoodsName, good.Price, good.Stock, good.BrandId, good.GoodsCategoryId)
 	return good, nil
+}
+
+func (r *mutationResolver) CreateBrand(ctx context.Context, input model.NewBrand) (*model.Brands, error) {
+	brand := &model.Brands{
+		BrandName: input.BrandName,
+	}
+	stmt, err := r.DB.Prepare("INSERT INTO brands(brand_name) VALUES(?)")
+	if err != nil {
+		fmt.Errorf("DBエラー")
+	}
+	stmt.Exec(brand.BrandName)
+	return brand, nil
+}
+
+func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.GoodsCategorys, error) {
+	category := &model.GoodsCategorys{
+		CategoryName: input.CategoryName,
+	}
+	stmt, err := r.DB.Prepare("INSERT INTO goods_category(category_name) VALUES(?)")
+	if err != nil {
+		fmt.Errorf("DBエラー")
+	}
+	stmt.Exec(category.CategoryName)
+	return category, nil
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
@@ -58,7 +97,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 }
 
 func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
-	rows, err := r.DB.Query("SELECT id, goods_name, price, stock, brand_id FROM goods;")
+	rows, err := r.DB.Query("SELECT id, goods_name, price, stock, brand_id, category_id FROM goods;")
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +108,7 @@ func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
 		// 構造体の配列に入れるための一時領域のため書き換えても問題ない。
 		goods = &model.Goods{}
 
-		err := rows.Scan(&goods.ID, &goods.GoodsName, &goods.Price, &goods.Stock, &goods.BrandId)
+		err := rows.Scan(&goods.ID, &goods.GoodsName, &goods.Price, &goods.Stock, &goods.BrandId, &goods.GoodsCategoryId)
 		if err != nil {
 			panic(fmt.Errorf("DBエラー"))
 		}
@@ -79,12 +118,12 @@ func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
 }
 
 func (r *queryResolver) FindGood(ctx context.Context, id int) (*model.Goods, error) {
-	stmt, err := r.DB.Prepare("SELECT id, goods_name, price, stock, brand_id FROM goods WHERE id = ?")
+	stmt, err := r.DB.Prepare("SELECT id, goods_name, price, stock, brand_id, category_id FROM goods WHERE id = ?")
 	if err != nil {
 		return nil, err
 	}
 	goods := &model.Goods{}
-	err = stmt.QueryRow(id).Scan(&goods.ID, &goods.GoodsName, &goods.Price, &goods.Stock, &goods.BrandId)
+	err = stmt.QueryRow(id).Scan(&goods.ID, &goods.GoodsName, &goods.Price, &goods.Stock, &goods.BrandId, &goods.GoodsCategoryId)
 	if err != nil {
 		panic(fmt.Errorf("DBエラー"))
 	}
