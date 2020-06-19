@@ -6,6 +6,7 @@ type Goods struct {
 	Price     int     `json:"price"`
 	Stock     int     `json:"stock"`
 	BrandId   *int `json:"brandId"`
+	GoodsCategoryId *int `json:"goodsCategoryId"`
 }
 
 type NewGoods struct {
@@ -13,4 +14,5 @@ type NewGoods struct {
 	Price     int    `json:"price"`
 	Stock     int    `json:"stock"`
 	BrandId	  *int	`json:"brandId"`
+	GoodsCategoryId *int `json:"goodsCategoryId"`
 }
