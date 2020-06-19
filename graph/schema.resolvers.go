@@ -15,6 +15,10 @@ import (
 )
 
 func (r *goodsResolver) Brand(ctx context.Context, obj *model.Goods) (*model.Brands, error) {
+	// オブジェクト内のBrandIdがセットされているか識別
+	if obj.BrandId == nil {
+		return nil, nil
+	}
 	stmt, err := r.DB.Prepare("SELECT id, brand_name FROM brands WHERE id = ?")
 	if err != nil {
 		return nil, err
