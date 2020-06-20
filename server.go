@@ -29,6 +29,7 @@ func main() {
 	}
 	defer db.Close()
 
+	// DBを渡す。
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{DB: db}}))
 
 	// 確認用url

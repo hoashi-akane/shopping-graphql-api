@@ -14,6 +14,7 @@ import (
 	"github.com/hoashi-akane/shopping-graphql/graph/model"
 )
 
+//　goodsがBrandを読んだときに呼ばれる関数
 func (r *goodsResolver) Brand(ctx context.Context, obj *model.Goods) (*model.Brands, error) {
 	// オブジェクト内のBrandIdがセットされているか識別
 	if obj.BrandId == nil {
@@ -28,6 +29,7 @@ func (r *goodsResolver) Brand(ctx context.Context, obj *model.Goods) (*model.Bra
 	return brands, err
 }
 
+//　goodsがCateggoryを読んだ時に呼ばれる関数
 func (r *goodsResolver) Category(ctx context.Context, obj *model.Goods) (*model.GoodsCategorys, error) {
 	// オブジェクト内のBrandIdがセットされているか識別
 	if obj.GoodsCategoryId == nil {
@@ -51,6 +53,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	return todo, nil
 }
 
+//　goods作成用関数
 func (r *mutationResolver) CreateGoods(ctx context.Context, input model.NewGoods) (*model.Goods, error) {
 	good := &model.Goods{
 		GoodsName:       input.GoodsName,
@@ -67,6 +70,7 @@ func (r *mutationResolver) CreateGoods(ctx context.Context, input model.NewGoods
 	return good, nil
 }
 
+// ブランド作成用関数
 func (r *mutationResolver) CreateBrand(ctx context.Context, input model.NewBrand) (*model.Brands, error) {
 	brand := &model.Brands{
 		BrandName: input.BrandName,
@@ -79,6 +83,7 @@ func (r *mutationResolver) CreateBrand(ctx context.Context, input model.NewBrand
 	return brand, nil
 }
 
+// カテゴリ作成用関数
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.GoodsCategorys, error) {
 	category := &model.GoodsCategorys{
 		CategoryName: input.CategoryName,
@@ -96,6 +101,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
+// goods一覧
 func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
 	rows, err := r.DB.Query("SELECT id, goods_name, price, stock, brand_id, category_id FROM goods;")
 	if err != nil {
@@ -117,6 +123,7 @@ func (r *queryResolver) Goodes(ctx context.Context) ([]*model.Goods, error) {
 	return results, nil
 }
 
+//　goods(1つ)
 func (r *queryResolver) FindGood(ctx context.Context, id int) (*model.Goods, error) {
 	stmt, err := r.DB.Prepare("SELECT id, goods_name, price, stock, brand_id, category_id FROM goods WHERE id = ?")
 	if err != nil {
@@ -130,6 +137,7 @@ func (r *queryResolver) FindGood(ctx context.Context, id int) (*model.Goods, err
 	return goods, nil
 }
 
+// brand(1つ)
 func (r *queryResolver) FindBrand(ctx context.Context, id int) (*model.Brands, error) {
 	stmt, err := r.DB.Prepare("SELECT id, brand_name FROM brands WHERE id = ?")
 	if err != nil {
