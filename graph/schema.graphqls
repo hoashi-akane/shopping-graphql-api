@@ -64,6 +64,7 @@ input NewCategory{
 type Mutation {
   createTodo(input: NewTodo!): Todo!
   createGoods(input: NewGoods!): Goods!
+  deleteGoods(input: Int!): Boolean!
   createBrand(input: NewBrand!): Brands!
   createCategory(input: NewCategory!): GoodsCategorys!
 }
